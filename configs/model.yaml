@@ -1,0 +1,26 @@
+# Configuracion de modelado (forecasting de casos por distrito x semana).
+forecasting:
+  target: "cases_total"
+  horizons: [1, 2, 3, 4]
+  # Cuantiles para el intervalo de prediccion (Etapa 1 del rediseno ML, ver
+  # docs/architecture.md). 0.5 = mediana (punto central), 0.1/0.9 = intervalo
+  # del 80%. LightGBM soporta objective="quantile" nativamente.
+  quantiles: [0.1, 0.5, 0.9]
+  candidates: ["naive", "seasonal_naive", "moving_average_4", "lightgbm"]
+
+validation:
+  scheme: "walk_forward"
+  train_end_year: 2018
+  val_end_year: 2020
+  test_end_year: 2024
+
+# Etapa 2 del rediseno ML: Temporal Fusion Transformer + clima (ver
+# docs/architecture.md). max_prediction_length reemplaza a la lista de
+# "horizons" de Etapa 1: el TFT pronostica esas semanas de una sola vez con
+# un solo modelo, no uno por horizonte.
+tft:
+  max_encoder_length: 12 # semanas de historia que ve el modelo por prediccion
+  max_prediction_length: 4 # semanas a pronosticar (coincide con horizons de Etapa 1)
+  batch_size: 64
+  max_epochs: 30
+  patience: 5 # early stopping

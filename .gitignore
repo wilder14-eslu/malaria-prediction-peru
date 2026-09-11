@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Datos (los datos crudos y generados no se versionan; ver docs/architecture.md)
+data/raw/
+data/gold/
+data_backup/
+
+# GeoJSON fuente de limites distritales (1.8MB, se puede volver a descargar
+# con pipelines/reference/build_district_adjacency.py). El CSV de adyacencia
+# calculado SI se versiona porque es pequeno y reproducirlo requiere el
+# extra "geo" (shapely).
+data/reference/*.geojson
+
+# Modelos entrenados (se versionan via MLflow, no via git)
+models/*.joblib
+models/*.json
+models/*.ckpt
+!models/.gitkeep
+
+# Etapa 2 (TFT): archivos que pytorch-lightning escribe al entrenar,
+# aunque no se pidan (hparams.yaml via save_hyperparameters, etc.)
+lightning_logs/
+checkpoints/
+
+# Etapa 2 (TFT): checkpoints intermedios de entrenamiento (resumible por
+# epoch, ver train_tft() en src/models/tft.py) -- estado de trabajo, no un
+# artefacto final. El champion final se guarda aparte en models/tft_champion.ckpt.
+models/tft_training_state/
+
+# Base de datos local de MLflow: vive fuera del repo por defecto
+# (~/.mlflow-malaria-prediction-peru/), pero se ignora igual por si alguien
+# sobreescribe MLFLOW_TRACKING_URI hacia una ruta dentro del repo.
+mlruns.db
+mlruns/
+
+# Notebooks: checkpoints
+.ipynb_checkpoints/
+
+# Entornos / secretos
+.env
+*.env.local
+
+# Editor / OS
+.vscode/
+.DS_Store
+
+# Carpeta local de salidas de Claude (no es parte del proyecto versionado)
+Claude outputs/
+
+# Frontend
+frontend/nextjs/node_modules/
+frontend/nextjs/.next/
+frontend/nextjs/out/

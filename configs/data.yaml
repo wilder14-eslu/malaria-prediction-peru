@@ -1,0 +1,13 @@
+# Configuracion de rutas de datos para el pipeline de ingesta.
+raw:
+  legacy_weekly_csv: "data/raw/epidemiology/datos_abiertos_vigilancia_malaria_2000_2008.csv"
+  line_list_csv: "data/raw/epidemiology/datos_abiertos_vigilancia_malaria_2009_2024.csv"
+
+gold:
+  canonical_weekly_cases: "data/gold/weekly_cases/canonical_weekly_cases.parquet"
+
+# Mapeo de codigos de diagnostico CIE-10 a especie de Plasmodium,
+# usado para agregar el line-list (fuente 2009-2024) a nivel semanal.
+diagnostic_species_map:
+  B50: "falciparum"
+  B51: "vivax"

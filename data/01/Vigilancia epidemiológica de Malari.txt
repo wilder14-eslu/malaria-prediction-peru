@@ -1,0 +1,36 @@
+Vigilancia epidemiológica de Malaria
+Salud
+Dataset de notificación de casos de malaria al sistema de vigilancia en salud pública del Perú
+Este dataset contiene información sobre la notificación de casos de malaria al sistema de vigilancia en salud pública del Perú, gestionado y administrado por el Centro Nacional de Epidemiología, Prevención y Control de Enfermedades (CDC PERU). Los datos provienen de la Red Nacional de Epidemiología (RENACE), que está conformada por 10 232 establecimientos de salud del Ministerio de Salud, EsSalud y otros del sector en los diferentes niveles de las Direcciones Regionales de Salud que tiene el Perú. De estos, 8 483 son Unidades Notificantes, reconocidos con Resolución Directoral de las respectivas Diresas/Geresas de Salud del Perú. La información del dataset se actualiza cada semana o mes, según la sección de tendencia del boletín epidemiológico, y es suministrada semanalmente por la RENACE. Los datos y análisis son provisionales y pueden estar sujetos a modificación. El dataset tiene como objetivo proporcionar información sobre la situación epidemiológica del dengue en el Perú, así como facilitar el acceso a los datos abiertos para fines de investigación, educación, prevención y control de esta enfermedad.
+
+Se cuentan con dos dataset el primero contempla una serie histórica del 2000 al 2008, con datos desagregados por ano,semana,departamento,provincia,distrito,ubigeo,falciparum,vivax.
+
+El dataset incluye las siguientes variables:
+
+CAMPO	TIPO	DENOMINACIÓN	VALORES
+ano	Integer	Año	 
+semana	Integer	Semana de inicio de síntomas	 
+departamento	Caracter	Región geográfica	 
+provincia	Caracter	Provincia	 
+distrito	Caracter	Lugar probable de infección	 
+ubigeo	Caracter	Código del lugar probable de infección
+falciparum	Caracter	Malaria por plasmodium falciparum	 
+vivax	Caracter	Malaria por plasmodium vivax	 
+el Segundo contempla una serie histórica del 2009 al 2023, con datos desagregados por departamento, provincia, distrito, enfermedad, año, semana, diagnóstico, tipo de diagnóstico, dirección de salud, ubigeo, edad, tipo de edad y sexo.
+
+El dataset incluye las siguientes variables:
+
+CAMPO	TIPO	DENOMINACIÓN	VALORES
+departamento	Caracter	Región geográfica	 
+provincia	Caracter	Provincia	 
+distrito	Caracter	Lugar probable de infección	 
+enfermedad	Caracter	Diagnóstico vigilado	 
+ano	Integer	Año	 
+semana	Integer	Semana de inicio de síntomas	 
+diagnostic	Caracter	CIE 10	 
+tipo_dx	Caracter	Tipo de diagnóstico	C= Confirmado, P = Probable, S = Sospechoso
+diresa	Caracter	Dirección de salud que notifica	 
+ubigeo	Caracter	Código del lugar probable de infección	 
+edad	Caracter	Edad del paciente	 
+tipo_edad	Caracter	Tipo de edad del paciente	A = Año, M = Mes, D = Días
+sexo	Caracter	Sexo	M = Masculino, F = Femenino
