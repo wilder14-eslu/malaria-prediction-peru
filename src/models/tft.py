@@ -167,7 +167,7 @@ def train_tft(
     batch_size: int = 64,
     max_epochs: int = 30,
     patience: int = 5,
-    accelerator: str = "cpu",
+    accelerator: str = "auto",
     trainer_overrides: dict[str, Any] | None = None,
     checkpoint_dir: Path | None = None,
     resume_from_checkpoint: str | None = None,
