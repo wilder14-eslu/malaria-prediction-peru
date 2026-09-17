@@ -1,0 +1,54 @@
+{
+  "h1": {
+    "champion": "lightgbm_quantile",
+    "champion_score": 0.45592534032625276,
+    "metric": "wape",
+    "challenger": "naive",
+    "all_candidates": {
+      "naive": 0.5204071349390306,
+      "seasonal_naive": 1.1450511945392492,
+      "moving_average_4": 0.5379925425778495,
+      "lightgbm_quantile": 0.45592534032625276
+    },
+    "local_path": "models\\forecasting_h1_champion.joblib"
+  },
+  "h2": {
+    "champion": "lightgbm_quantile",
+    "champion_score": 0.5060432176436969,
+    "metric": "wape",
+    "challenger": "moving_average_4",
+    "all_candidates": {
+      "naive": 0.6092973740241305,
+      "seasonal_naive": 1.1483465155383945,
+      "moving_average_4": 0.5685896785967758,
+      "lightgbm_quantile": 0.5060432176436969
+    },
+    "local_path": "models\\forecasting_h2_champion.joblib"
+  },
+  "h3": {
+    "champion": "lightgbm_quantile",
+    "champion_score": 0.5281641324753137,
+    "metric": "wape",
+    "challenger": "moving_average_4",
+    "all_candidates": {
+      "naive": 0.6392296900905496,
+      "seasonal_naive": 1.1523235800344234,
+      "moving_average_4": 0.5897844662670578,
+      "lightgbm_quantile": 0.5281641324753137
+    },
+    "local_path": "models\\forecasting_h3_champion.joblib"
+  },
+  "h4": {
+    "champion": "lightgbm_quantile",
+    "champion_score": 0.541746045198635,
+    "metric": "wape",
+    "challenger": "moving_average_4",
+    "all_candidates": {
+      "naive": 0.6380918220946915,
+      "seasonal_naive": 1.1492789476859953,
+      "moving_average_4": 0.6164557286329165,
+      "lightgbm_quantile": 0.541746045198635
+    },
+    "local_path": "models\\forecasting_h4_champion.joblib"
+  }
+}

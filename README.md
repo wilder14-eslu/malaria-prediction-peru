@@ -8,6 +8,11 @@ Este repo se reconstruyo desde cero a partir del commit inicial
 Ver `docs/architecture.md` para el detalle completo del diseno y su
 fundamentacion en literatura academica.
 
+**Estado del proyecto: en pausa.** El nucleo end-to-end (ingesta, features,
+modelado con champion validado, API de inferencia) esta hecho y probado con
+datos reales completos -- ver tabla abajo. Las fases restantes (Etapa 3
+opcional, monitoreo/drift, despliegue) quedan pendientes sin fecha definida.
+
 ## Estado actual
 
 | Fase | Descripcion | Estado |
@@ -18,10 +23,10 @@ fundamentacion en literatura academica.
 | 3 | Etapa 1 del rediseno ML: LightGBM + features espaciales + salida por cuantiles | Hecho, validado con datos reales completos |
 | 3b | Champion/Challenger + registro en MLflow | Hecho |
 | 4 | Etapa 2 del rediseno ML: Temporal Fusion Transformer + clima | Entrenado y validado con clima real; WAPE 1.33, pierde contra Etapa 1 (ver nota abajo) |
-| 5 | Etapa 3 del rediseno ML (opcional): GNN espacio-temporal | Pendiente |
+| 5 | Etapa 3 del rediseno ML (opcional): GNN espacio-temporal | En pausa |
 | 6 | API de inferencia (FastAPI) | Hecho, probada de punta a punta contra los modelos campeon reales |
-| 7 | Monitoreo, drift y politica de reentrenamiento | Pendiente |
-| 8 | Despliegue (Render) + CI/CD | Pendiente |
+| 7 | Monitoreo, drift y politica de reentrenamiento | En pausa |
+| 8 | Despliegue (Render) + CI/CD | En pausa |
 
 ## Instalacion
 

@@ -1,0 +1,37 @@
+# No enviar al contexto de Docker
+.git
+.venv
+.venv-*
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.mypy_cache
+*.egg-info
+
+# Notebooks y outputs locales
+*.ipynb
+Claude outputs/
+
+# Datos crudos (solo se necesita gold/ y reference/)
+data/raw/
+data/01/
+data_backup/
+
+# Modelos intermedios / TFT (solo se necesitan los champion .joblib)
+models/tft_*
+models/.gitkeep
+lightning_logs/
+checkpoints/
+
+# Dev / editor
+.vscode/
+.DS_Store
+.env
+*.env.local
+docs/
+README.md
+Makefile
+
+# Frontend (si existe)
+frontend/

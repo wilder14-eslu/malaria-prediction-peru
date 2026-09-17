@@ -19,21 +19,19 @@ data_backup/
 # extra "geo" (shapely).
 data/reference/*.geojson
 
-# Modelos entrenados (se versionan via MLflow, no via git)
-models/*.joblib
-models/*.json
+# Modelos entrenados: se ignoran los intermedios, pero los champion se
+# versionan en git para que Render (u otro host) pueda desplegarlos
+# directamente sin correr el pipeline de entrenamiento.
 models/*.ckpt
+models/tft_training_state/
 !models/.gitkeep
+!models/champion.json
+!models/forecasting_*_champion.joblib
 
 # Etapa 2 (TFT): archivos que pytorch-lightning escribe al entrenar,
 # aunque no se pidan (hparams.yaml via save_hyperparameters, etc.)
 lightning_logs/
 checkpoints/
-
-# Etapa 2 (TFT): checkpoints intermedios de entrenamiento (resumible por
-# epoch, ver train_tft() en src/models/tft.py) -- estado de trabajo, no un
-# artefacto final. El champion final se guarda aparte en models/tft_champion.ckpt.
-models/tft_training_state/
 
 # Base de datos local de MLflow: vive fuera del repo por defecto
 # (~/.mlflow-malaria-prediction-peru/), pero se ignora igual por si alguien

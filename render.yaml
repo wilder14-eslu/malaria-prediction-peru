@@ -1,0 +1,17 @@
+# render.yaml — Configuración declarativa para Render
+# https://docs.render.com/blueprint-spec
+#
+# Uso: conecta este repo a Render y el blueprint lo detecta automáticamente.
+# O crea el servicio manualmente y apunta al Dockerfile.
+
+services:
+  - type: web
+    name: malaria-prediction-peru
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    healthCheckPath: /health
