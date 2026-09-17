@@ -50,6 +50,14 @@ def main() -> None:
     else:
         print(f"Aviso: {ADJACENCY_PATH} no existe, se entrena sin features espaciales.")
 
+    # Materializar features para que la API las cargue directamente sin
+    # recalcular (reduce RAM de ~500MB a ~40MB en el arranque, necesario
+    # para el free tier de Render con 512MB).
+    materialized_path = Path(data_config["gold"]["materialized_features"])
+    materialized_path.parent.mkdir(parents=True, exist_ok=True)
+    features.to_parquet(materialized_path, index=False)
+    print(f"Features materializadas en {materialized_path}")
+
     features = create_forecast_targets(features, target_col=target_col, horizons=horizons)
     feature_cols = get_feature_columns(features, horizons=horizons)
 

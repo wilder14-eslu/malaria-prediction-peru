@@ -7,21 +7,20 @@ Separado de ``api/`` a proposito: esto es logica de negocio testeable sin
 levantar FastAPI, siguiendo la misma separacion libreria (``src/``) vs.
 orquestacion/presentacion (``pipelines/``, ``api/``) del resto del proyecto.
 
-Limitacion conocida de esta primera version: las features (lags, rolling,
-vecinos espaciales) se recalculan en memoria a partir de la tabla canonica
-completa cada vez que se llama ``build_latest_features`` -- no hay un feature
-store real con actualizacion incremental. Medido con los datos reales
-completos (143502 registros, 1645 UBIGEO): ~25-30 segundos. Se paga UNA
-sola vez al arrancar la API (``api/main.py`` lo hace en el lifespan, no en
-cada request), asi que no afecta la latencia de ``/predict``, pero si el
-tiempo de arranque -- a revisar (cachear a un parquet materializado, o
-vectorizar el loop por UBIGEO en ``complete_weekly_grid``) si el dataset
-crece mucho o el arranque en frio se vuelve un problema (ver Fase 7 en el
-README).
+Optimizacion de memoria (v2): en vez de recalcular toda la tabla de features
+desde la tabla canonica (lo cual consumia ~500MB de RAM por el
+``complete_weekly_grid`` + spatial joins sobre 2.1M filas), ahora carga un
+parquet pre-materializado (``data/gold/features/materialized_features.parquet``,
+generado por ``pipelines/training/run_ml_models.py``). Esto reduce el uso
+de RAM a ~40MB, permitiendo correr en el free tier de Render (512MB).
+
+Fallback: si el parquet materializado no existe, se recalcula como antes
+(para desarrollo local con mas RAM disponible).
 """
 
 from __future__ import annotations
 
+import gc
 import json
 from pathlib import Path
 from typing import Any
@@ -30,8 +29,6 @@ import joblib
 import pandas as pd
 import yaml
 
-from src.features.pipeline import build_features
-from src.features.spatial import add_neighbor_lag_features, load_adjacency
 from src.models.baseline import BASELINE_PREDICTORS
 from src.models.forecasting import get_feature_columns, predict_quantiles
 
@@ -47,21 +44,56 @@ class UbigeoNotFoundError(KeyError):
     de casos registrada para el en la fuente de vigilancia)."""
 
 
+def _downcast_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Reduce el uso de memoria convirtiendo float64 → float32 e int64 → int32
+    donde sea seguro. En la tabla de features de malaria, los valores son
+    counts y ratios pequenos, asi que float32 e int32 sobran.
+    """
+    for col in df.select_dtypes(include=["float64"]).columns:
+        df[col] = df[col].astype("float32")
+    for col in df.select_dtypes(include=["int64"]).columns:
+        df[col] = pd.to_numeric(df[col], downcast="integer")
+    return df
+
+
 def build_latest_features(
     data_config_path: Path = DATA_CONFIG_PATH, adjacency_path: Path = ADJACENCY_PATH
 ) -> pd.DataFrame:
-    """Reconstruye la tabla de features completa (misma logica que usan los
-    pipelines de entrenamiento) a partir de la tabla canonica. La fila mas
-    reciente de cada UBIGEO es el vector de entrada para prediccion.
+    """Carga la tabla de features lista para inferencia.
+
+    Estrategia (v2, optimizada para 512MB de RAM):
+    1. Si existe el parquet materializado (generado por run_ml_models),
+       lo carga directamente — rapido (~2-3s) y liviano (~40MB de RAM).
+    2. Si no existe (desarrollo local, primera vez), recalcula desde la
+       tabla canonica como antes (fallback, ~25-30s, ~500MB de RAM).
     """
     with data_config_path.open(encoding="utf-8") as f:
         data_config = yaml.safe_load(f)
 
+    materialized_path = data_config.get("gold", {}).get("materialized_features")
+    if materialized_path and Path(materialized_path).exists():
+        features = pd.read_parquet(materialized_path)
+        features = _downcast_dataframe(features)
+        gc.collect()
+        return features
+
+    # Fallback: recalcular (necesita mas RAM, OK para desarrollo local)
+    from src.features.pipeline import build_features
+    from src.features.spatial import add_neighbor_lag_features, load_adjacency
+
     canonical = pd.read_parquet(data_config["gold"]["canonical_weekly_cases"])
     features = build_features(canonical)
+    del canonical
+    gc.collect()
+
     if adjacency_path.exists():
         adjacency = load_adjacency(str(adjacency_path))
         features = add_neighbor_lag_features(features, adjacency)
+        del adjacency
+        gc.collect()
+
+    features = _downcast_dataframe(features)
+    gc.collect()
     return features
 
 

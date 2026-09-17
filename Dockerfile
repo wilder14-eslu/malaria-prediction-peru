@@ -50,7 +50,8 @@ COPY models/forecasting_h*_champion.joblib models/
 # Datos de referencia (versionados en git)
 COPY data/reference/ data/reference/
 
-# Tabla canonica gold (necesaria para build_latest_features al arrancar)
+# Datos gold: tabla canonica + features materializadas (la API carga el
+# parquet materializado directamente, sin recalcular, para caber en 512MB)
 COPY data/gold/ data/gold/
 
 # --- Runtime ---------------------------------------------------------------
