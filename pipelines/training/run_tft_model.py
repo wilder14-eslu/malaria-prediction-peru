@@ -126,7 +126,6 @@ def main() -> None:
         patience=tft_config["patience"],
         checkpoint_dir=TRAINING_STATE_DIR,
         resume_from_checkpoint=resume_from,
-        trainer_overrides={"precision": "16-mixed"} if torch.cuda.is_available() else None,
     )
     torch.save(model.state_dict(), TFT_CHECKPOINT_PATH)
 
