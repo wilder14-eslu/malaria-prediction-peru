@@ -1,0 +1,17 @@
+model,horizon,quantile,pinball_loss
+lightgbm_quantile,1,0.1,0.20973616637747022
+lightgbm_quantile,1,0.5,0.5444220399587733
+lightgbm_quantile,1,0.9,0.35857095027999825
+lightgbm_quantile,1,coverage_0.1_0.9,0.9444043321299639
+lightgbm_quantile,2,0.1,0.20965405026493847
+lightgbm_quantile,2,0.5,0.6018091584517734
+lightgbm_quantile,2,0.9,0.40751874818927797
+lightgbm_quantile,2,coverage_0.1_0.9,0.9419424850786761
+lightgbm_quantile,3,0.1,0.2130882030752608
+lightgbm_quantile,3,0.5,0.6253903598216453
+lightgbm_quantile,3,0.9,0.4349878107645632
+lightgbm_quantile,3,coverage_0.1_0.9,0.9412262156448203
+lightgbm_quantile,4,0.1,0.21317576076582442
+lightgbm_quantile,4,0.5,0.6398787035100503
+lightgbm_quantile,4,0.9,0.44404195714124484
+lightgbm_quantile,4,coverage_0.1_0.9,0.9451673424922835

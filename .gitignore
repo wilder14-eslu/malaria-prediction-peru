@@ -10,7 +10,9 @@ venv/
 
 # Datos (los datos crudos y generados no se versionan; ver docs/architecture.md)
 data/raw/
-data/gold/
+# data/gold/ se versiona: contiene la tabla canonica (~350KB) y metricas
+# necesarias para que la API arranque. Sin esto, el COPY data/gold/ en el
+# Dockerfile falla en Render (el directorio no existe en el repo clonado).
 data_backup/
 
 # GeoJSON fuente de limites distritales (1.8MB, se puede volver a descargar
