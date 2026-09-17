@@ -138,6 +138,12 @@ app.add_middleware(
 )
 
 
+from fastapi.responses import RedirectResponse
+
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
+
 @app.get(
     "/health",
     response_model=HealthResponse,
