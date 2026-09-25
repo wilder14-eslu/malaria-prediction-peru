@@ -1,4 +1,4 @@
-# 🦟 Plataforma de Alerta Temprana de Malaria — Perú
+# 🦟 Plataforma de Alerta Temprana de Malaria - Perú
 
 **Sistema de predicción de casos de malaria por distrito y semana
 epidemiológica**, construido con Machine Learning sobre datos reales del
