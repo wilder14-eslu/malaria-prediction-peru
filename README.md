@@ -8,13 +8,14 @@ reales del Ministerio de Salud del Perú (CDC/DGE-MINSA, 2000–2024).
 > próximas 1 a 4 semanas, **con intervalos de predicción del 80 %**, para que
 > las autoridades de salud prioricen recursos antes de que ocurran los brotes.
 
+[![CI](https://github.com/wilder14-eslu/malaria-prediction-peru/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wilder14-eslu/malaria-prediction-peru/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![LightGBM](https://img.shields.io/badge/LightGBM-quantile-2a78d6)
 ![MLflow](https://img.shields.io/badge/MLflow-Model%20Registry-0194E2?logo=mlflow&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-inferencia-009688?logo=fastapi&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Render-2496ED?logo=docker&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-frontend-FF4B4B?logo=streamlit&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-50%20pytest-1baf7a)
+![Tests](https://img.shields.io/badge/tests-45%20passing-1baf7a)
 
 ---
 
@@ -545,7 +546,7 @@ sequenceDiagram
 | Contenedor | **Docker** (python:3.12-slim + libgomp) | Imagen reproducible con solo dependencias de producción |
 | Despliegue | **Render** (blueprint `render.yaml`) | Web service con health check `/health` |
 | Frontend | **Streamlit** | Consulta interactiva por distrito |
-| Calidad de código | pytest (50 tests), ruff, mypy | Tests unitarios y de integración, lint y tipado |
+| Calidad de código | pytest (45 tests), ruff, mypy, **GitHub Actions** | CI en cada push: lint, formato, tipado, tests, smoke test de la API y build Docker |
 
 ### Decisiones de diseño MLOps
 
@@ -567,8 +568,9 @@ sequenceDiagram
 | Tracking y registro de modelos | | ✅ | ✅ MLflow + Model Registry |
 | Selección automática del campeón | | ✅ | ✅ Champion/Challenger por horizonte |
 | Serving containerizado | | ✅ | ✅ Docker + Render |
-| Tests automatizados | | ✅ | ✅ 50 tests |
-| CI/CD | | | 🔧 En progreso (Fase 8) |
+| Tests automatizados | | ✅ | ✅ 45 tests |
+| CI (integración continua) | | ✅ | ✅ GitHub Actions: ruff, mypy, pytest, smoke test API, build Docker |
+| CD (despliegue continuo) | | | 🔧 Render (auto-deploy desde `main`) |
 | Monitoreo de drift y reentrenamiento | | | ⏸️ Pendiente (Fase 7) |
 
 ---
@@ -647,7 +649,7 @@ intervalo del 80 % entre **3 y 20 casos**.
 | 5 | GNN espacio-temporal (opcional) | ⏸️ En pausa |
 | 6 | API de inferencia (FastAPI) + frontend Streamlit | ✅ Hecha y probada end-to-end |
 | 7 | Monitoreo, drift y política de reentrenamiento | ⏸️ En pausa |
-| 8 | Despliegue (Render) + CI/CD | 🔧 En progreso |
+| 8 | Despliegue (Render) + CI con GitHub Actions | ✅ CI hecho · 🔧 CD en progreso |
 
 ---
 
@@ -682,7 +684,8 @@ malaria-prediction-peru/
 │   ├── architecture.md     #   Fundamentación académica y etapas de modelado
 │   ├── results/            #   metrics.json + tablas CSV del reporte
 │   └── images/results/     #   15 gráficas del reporte
-├── tests/                  # 50 tests (unitarios e integración)
+├── tests/                  # 45 tests (unitarios e integración)
+├── .github/workflows/ci.yml  # CI: lint, tipos, tests, smoke test y build Docker
 ├── Dockerfile              # Imagen para despliegue en Render
 ├── render.yaml             # Blueprint del servicio en Render
 └── pyproject.toml          # Dependencias y configuración
@@ -736,7 +739,7 @@ streamlit run frontend/streamlit/app.py
 ### Tests y calidad de código
 
 ```bash
-pytest -v             # 50 tests
+pytest -v             # 45 tests (+1 TFT que requiere el extra dl)
 ruff check .          # Lint
 ruff format .         # Formato
 mypy src api          # Tipado
@@ -764,6 +767,29 @@ python -m pipelines.training.run_tft_model            # o Entrenamiento_TFT_Cola
 > departamentos, 2000–2024): WAPE = 1.33, pierde contra baselines y contra
 > LightGBM. Causas probables: pocas épocas, sin búsqueda de hiperparámetros y
 > sin los lags que sí usa LightGBM. Ver `docs/architecture.md`.
+
+---
+
+## 🔁 Integración continua (CI)
+
+Cada push y pull request a `main` ejecuta el workflow
+[`ci.yml`](.github/workflows/ci.yml) en GitHub Actions:
+
+```mermaid
+flowchart LR
+    A["push / PR a main"] --> B["ruff check<br/>ruff format --check"]
+    B --> C["mypy src api"]
+    C --> D["pytest + cobertura<br/>(45 tests)"]
+    D --> E["Smoke test API<br/>/health · /predict"]
+    E --> F["docker build"]
+    F --> G["Smoke test del<br/>contenedor"]
+    G --> H(["✅ CI passing"])
+```
+
+| Job | Qué verifica |
+|---|---|
+| **Lint, tipos y tests** | Estilo (ruff), formato, tipado estático (mypy), 45 tests con cobertura y que la API levante y responda `/health` y `/predict/160101` |
+| **Build y smoke test Docker** | Que la imagen de producción se construya y que el contenedor responda igual que en Render |
 
 ---
 

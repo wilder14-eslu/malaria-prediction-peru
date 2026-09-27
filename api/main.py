@@ -24,7 +24,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.responses import RedirectResponse
 
 from api.schemas import HealthResponse, HorizonPrediction, UbigeoPrediction
 from src.inference.predict import UbigeoNotFoundError, build_latest_features, load_champion_config
@@ -138,11 +138,10 @@ app.add_middleware(
 )
 
 
-from fastapi.responses import RedirectResponse
-
 @app.get("/", include_in_schema=False)
 def root():
     return RedirectResponse(url="/docs")
+
 
 @app.get(
     "/health",
@@ -211,7 +210,9 @@ def health() -> HealthResponse:
             },
         },
         404: {"description": "UBIGEO no encontrado en la fuente de vigilancia."},
-        503: {"description": "Modelo no disponible — el pipeline de entrenamiento no se ha corrido."},
+        503: {
+            "description": "Modelo no disponible: el pipeline de entrenamiento no se ha corrido."
+        },
     },
 )
 def predict(ubigeo: str) -> UbigeoPrediction:

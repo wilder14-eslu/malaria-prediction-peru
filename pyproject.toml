@@ -72,6 +72,8 @@ select = ["E", "F", "I", "UP", "B"]
 # Los fixtures de test con CSV crudo como string literal a veces superan
 # el limite de linea; no vale la pena partir esas cabeceras artificialmente.
 "tests/*" = ["E501"]
+# El frontend Streamlit tiene bloques HTML/Markdown largos como string literal.
+"frontend/*" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
